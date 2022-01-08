@@ -13,5 +13,5 @@ CREATE TABLE todos (
 ```
 Then adding your postgres url into .env file.
 ```
-POSTGRES_URL=your_postgress_url
+POSTGRES_URL=your_postgres_url
 ```
