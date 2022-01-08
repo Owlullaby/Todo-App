@@ -1,0 +1,45 @@
+name: Build and publish docker image
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-20.04
+    steps:
+    ## checks out our project source code
+    - uses: actions/checkout@v2
+    ## create env file
+    - name: Create env file
+      run: |
+        touch .env
+        echo POSTGRES_URL=${{ secrets.POSTGRES_URL }} >> .env
+    ## Get metadata tag
+    - name: Docker meta
+      id: meta
+      uses: docker/metadata-action@v3
+      with:
+        images: owlullaby/todoapp
+    ## Login to docker hub
+    - name: Login to DockerHub
+      uses: docker/login-action@v1
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_PASSWORD }}
+    ## build and push to docker hub
+    - name: Build and push
+      uses: docker/build-push-action@v2
+      with:
+        tags: ${{ steps.meta.outputs.tags }}
+    ## deploy on digital ocean
+    - name: Deploy
+      uses: appleboy/ssh-action@v0.1.4
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        key: ${{ secrets.SSH_KEY }}
+        username: ${{ secrets.SSH_USERNAME }}
+        run: |
+          docker stop $(docker container ls | grep "todoapp:*" | awk '{ print $NF }')
+          docker run -d -p ${{ secrets.PORT }} owlullaby/todoapp:${{ steps.meta.outputs.tags }}

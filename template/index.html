@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+        <title>
+        Simple Todo App
+        </title>
+        <link rel="stylesheet" href="https://unpkg.com/tailwindcss@2.2.19/dist/tailwind.min.css" />
+        <link href="https://fonts.googleapis.com/css2?family=Lobster&family=Nunito&display=swap" rel="stylesheet"> 
+        <script type="text/javascript" src="./template/main.js"></script>
+    </head>
+    <header class="p-5 text-4xl" style="font-family: 'Lobster', cursive;">
+        Simple Todo App
+    </header>
+    <body class="flex flex-col items-center overflow-hidden">
+
+        <div class="mb-5">
+            <form action="/addtodo" method="post">
+                <input name="newtodo" type="text" placeholder="Create New Task" class="rounded-md border-gray-600 border-4"/>
+                <button id="addBtn" type="submit" class="bg-gray-300 rounded-md px-2 py-1 hover:bg-gray-500">+</button>
+            </form>
+        </div>
+        <div id="lists" class="overflow-hidden h-96">
+                <ul>
+                    {{range .Todos}}
+                    <li class="flex mx-1 my-1">
+                        <a href="/deletetodo/{{.ID}}"><button id="deleteBtn" class="rounded-md bg-gray-300 px-3 py-1 hover:bg-gray-500">-</button></a>
+                        <div class="rounded-md border-gray-600 bg-gray-600 w-56 mx-1  text-white" style="font-family: 'Nunito', sans-serif;">
+                            <label class="truncate p-1" style="display:block">{{.Desc}}</label>
+                            <form action="/todo/{{.ID}}" method="put">
+                                <input name="edittask" class="m-1 rounded-md w-4/6 text-gray-500" type="text" style="display:none">
+                                <button type="submit" class="rounded-l -mr-1 bg-green-300 px-3 text-black" style="display:none">/</button>
+                                <button type="button" class="rounded-r bg-red-300 px-2 text-black" style="display:none">X</button>
+                            </form>
+                        </div>
+                    </li>
+                    {{end}}
+                </ul>
+            </div>      
+        </div>   
+    </body>
+</html>
